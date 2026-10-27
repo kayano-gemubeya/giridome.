@@ -1,156 +1,494 @@
-
 <!doctype html>
 <html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#f5f5f2">
-<title>ギリ止め。</title>
-<style>
-:root{--bg:#f5f5f2;--paper:#fff;--ink:#171717;--muted:#777;--line:#e3e3df;--accent:#c8f169;--bad:#df5b51}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,"Hiragino Sans",Meiryo,sans-serif}
-body{min-height:100svh;display:flex;justify-content:center;overscroll-behavior:none}
-.app{width:min(100%,460px);min-height:100svh;padding:calc(18px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column}
-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:22px;border-bottom:1px solid var(--line)}
-.logo{font-size:20px;font-weight:850;letter-spacing:-.07em}.logo span{font-weight:400}
-.edition{font-size:10px;letter-spacing:.12em;color:var(--muted);font-weight:700}
-.intro{padding:35px 0 24px}
-.eyebrow{font-size:11px;font-weight:750;letter-spacing:.14em;color:#69695f}
-h1{font-size:clamp(39px,11vw,54px);letter-spacing:-.085em;line-height:.98;margin:11px 0 13px;font-weight:850}
-h1 span{background:var(--accent);padding:0 .08em}
-.desc{font-size:13px;color:var(--muted);line-height:1.8;margin:0}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);background:var(--paper);border-radius:15px;margin-bottom:14px}
-.stat{padding:13px 8px;text-align:center}.stat+.stat{border-left:1px solid var(--line)}
-.stat small{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.stat strong{font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
-.game{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:17px}
-.gamehead{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:16px}
-.gamehead strong{color:var(--ink);font-size:11px}
-.track{position:relative;height:56px;border-radius:9px;background:#f0f0eb;overflow:hidden;touch-action:manipulation}
-.zone{position:absolute;top:0;bottom:0;background:linear-gradient(90deg,rgba(200,241,105,.28) 0%,rgba(200,241,105,.52) 25%,#c8f169 50%,rgba(200,241,105,.52) 75%,rgba(200,241,105,.28) 100%);border-left:1px solid #8aab43;border-right:1px solid #8aab43}
-.zone::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);background:#789b32;opacity:.7}
-.needle{position:absolute;top:6px;bottom:6px;width:3px;background:#171717;border-radius:3px;transform:translateX(-50%);will-change:left}
-.scale{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:#999}
-.tap{width:100%;height:58px;margin-top:17px;border:0;border-radius:11px;background:#171717;color:white;font:750 15px inherit;font-size:15px;font-weight:750;letter-spacing:.01em;touch-action:manipulation;cursor:pointer;user-select:none}
-.tap:active{background:#333}
-.tap:disabled{opacity:.45}
-.feedback{height:36px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);font-weight:650}
-.feedback.good{color:#52751a}.feedback.bad{color:var(--bad)}
-.result{display:none;background:var(--paper);border:1px solid var(--line);border-radius:18px;margin-top:14px;padding:22px;text-align:center}
-.result.show{display:block}
-.result .label{font-size:10px;letter-spacing:.14em;color:var(--muted);font-weight:750}
-.final{font-size:58px;line-height:1.1;font-weight:850;letter-spacing:-.08em;margin:9px 0}
-.rank{font-size:14px;font-weight:750}.result p{font-size:12px;color:var(--muted);line-height:1.7}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:17px}
-.secondary{border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);height:45px;font-size:12px;font-weight:750;cursor:pointer}
-.secondary.share{background:var(--accent);border-color:var(--accent)}
-.how{display:flex;gap:12px;margin:19px 2px 0;color:var(--muted);font-size:11px;line-height:1.65}
-.how b{color:var(--ink);font-weight:750}
-footer{margin-top:auto;padding-top:28px;text-align:center;font-size:10px;color:#aaa}
-@media(max-height:720px){.intro{padding:22px 0 17px}h1{font-size:40px}.app{padding-top:calc(12px + env(safe-area-inset-top))}.tap{height:52px}}
-</style>
-</head>
-<body>
-<main class="app">
-<header><div class="logo">ギリ止め<span>。</span></div><div class="edition"> </div></header>
-<section class="intro">
-<div class="eyebrow"> </div>
-<h1>ギリ止め。</h1>
-<p class="desc">緑色の枠の真ん中により近い位置で止める。<br>10ラウンド行い高スコアを狙おう！</p>
-</section>
-<section class="stats">
-<div class="stat"><small>スコア</small><strong id="score">0000</strong></div>
-<div class="stat"><small>コンボ</small><strong id="combo">0</strong></div>
-<div class="stat"><small>ベスト</small><strong id="best">0000</strong></div>
-</section>
-<section class="game">
-<div class="gamehead"><span id="roundLabel">ROUND 01 / 10</span><strong id="status">READY</strong></div>
-<div class="track" id="track"><div class="zone" id="zone"></div><div class="needle" id="needle"></div></div>
-<div class="scale"><span> </span><span> </span></div>
-<button class="tap" id="tapBtn">タップしてスタート</button>
-<div class="feedback" id="feedback" aria-live="polite">真ん中に近いほど高得点。</div>
-</section>
-<section class="result" id="result">
-<div class="label">YOUR SCORE</div><div class="final" id="finalScore">0000</div>
-<div class="rank" id="rank">いい勝負！</div>
-<p id="resultText"></p>
-<div class="actions"><button class="secondary share" id="shareBtn">𝕏 に結果を投稿</button><button class="secondary" id="retryBtn">もう一度</button></div>
-</section>
-<div class="how"><div><b>01</b>　タップでスタート</div><div><b>02</b>　色の中でタップ</div><div><b>03</b>　10回で結果発表</div></div>
-<footer>ギリ止め。 · 1プレイ約20秒</footer>
-</main>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="theme-color" content="#f5f5f2">
+    <title>ギリ止め。</title>
+      <style>
+:root {
+  --bg:#f5f5f2;
+  --paper:#fff;
+  --ink:#171717;
+  --muted:#777;
+  --line:#e3e3df;
+  --accent:#c8f169;
+  --bad:#df5b51
+}
+* {
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent
+}
+html,body {
+  margin:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,"Hiragino Sans",Meiryo,sans-serif
+}
+body {
+  min-height:100svh;
+  display:flex;
+  justify-content:center;
+  overscroll-behavior:none
+}
+.app {
+  width:min(100%,460px);
+  min-height:100svh;
+  padding:calc(18px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));
+  display:flex;
+  flex-direction:column
+}
+header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding-bottom:22px;
+  border-bottom:1px solid var(--line)
+}
+.logo {
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-.07em
+}
+.logo span {
+  font-weight:400
+}
+.edition {
+  font-size:10px;
+  letter-spacing:.12em;
+  color:var(--muted);
+  font-weight:700
+}
+.intro {
+  padding:35px 0 24px
+}
+.eyebrow {
+  font-size:11px;
+  font-weight:750;
+  letter-spacing:.14em;
+  color:#69695f
+}
+h1 {
+  font-size:clamp(39px,11vw,54px);
+  letter-spacing:-.085em;
+  line-height:.98;
+  margin:11px 0 13px;
+  font-weight:850
+}
+h1 span {
+  background:var(--accent);
+  padding:0 .08em
+}
+.desc {
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.8;
+  margin:0
+}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  border:1px solid var(--line);
+  background:var(--paper);
+  border-radius:15px;
+  margin-bottom:14px
+}
+.stat {
+  padding:13px 8px;
+  text-align:center
+}
+.stat+.stat {
+  border-left:1px solid var(--line)
+}
+.stat small {
+  display:block;
+  font-size:10px;
+  color:var(--muted);
+  margin-bottom:5px
+}
+.stat strong {
+  font-size:22px;
+  font-variant-numeric:tabular-nums;
+  letter-spacing:-.04em
+}
+.game {
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:17px
+}
+.gamehead {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:11px;
+  color:var(--muted);
+  margin-bottom:16px
+}
+.gamehead strong {
+  color:var(--ink);
+  font-size:11px
+}
+.track {
+  position:relative;
+  height:56px;
+  border-radius:9px;
+  background:#f0f0eb;
+  overflow:hidden;
+  touch-action:manipulation
+}
+.zone {
+  position:absolute;
+  top:0;
+  bottom:0;
+  background:linear-gradient(90deg,rgba(200,241,105,.28) 0%,rgba(200,241,105,.52) 25%,#c8f169 50%,rgba(200,241,105,.52) 75%,rgba(200,241,105,.28) 100%);
+  border-left:1px solid #8aab43;
+  border-right:1px solid #8aab43
+}
+.zone::after {
+  content:"";
+  position:absolute;
+  left:50%;
+  top:0;
+  bottom:0;
+  width:2px;
+  transform:translateX(-50%);
+  background:#789b32;
+  opacity:.7
+}
+.needle {
+  position:absolute;
+  top:6px;
+  bottom:6px;
+  width:3px;
+  background:#171717;
+  border-radius:3px;
+  transform:translateX(-50%);
+  will-change:left
+}
+.scale {
+  display:flex;
+  justify-content:space-between;
+  margin-top:7px;
+  font-size:10px;
+  color:#999
+}
+.tap {
+  width:100%;
+  height:58px;
+  margin-top:17px;
+  border:0;
+  border-radius:11px;
+  background:#171717;
+  color:white;
+  font:750 15px inherit;
+  font-size:15px;
+  font-weight:750;
+  letter-spacing:.01em;
+  touch-action:manipulation;
+  cursor:pointer;
+  user-select:none
+}
+.tap:active {
+  background:#333
+}
+.tap:disabled {
+  opacity:.45
+}
+.feedback {
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:650
+}
+.feedback.good {
+  color:#52751a
+}
+.feedback.bad {
+  color:var(--bad)
+}
+.result {
+  display:none;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
+  margin-top:14px;
+  padding:22px;
+  text-align:center
+}
+.result.show {
+  display:block
+}
+.result .label {
+  font-size:10px;
+  letter-spacing:.14em;
+  color:var(--muted);
+  font-weight:750
+}
+.final {
+  font-size:58px;
+  line-height:1.1;
+  font-weight:850;
+  letter-spacing:-.08em;
+  margin:9px 0
+}
+.rank {
+  font-size:14px;
+  font-weight:750
+}
+.result p {
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.7
+}
+.actions {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:17px
+}
+.secondary {
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+  color:var(--ink);
+  height:45px;
+  font-size:12px;
+  font-weight:750;
+  cursor:pointer
+}
+.secondary.share {
+  background:var(--accent);
+  border-color:var(--accent)
+}
+.how {
+  display:flex;
+  gap:12px;
+  margin:19px 2px 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.65
+}
+.how b {
+  color:var(--ink);
+  font-weight:750
+}
+footer {
+  margin-top:auto;
+  padding-top:28px;
+  text-align:center;
+  font-size:10px;
+  color:#aaa
+}
+@media(max-height:720px) {
+.intro {
+  padding:22px 0 17px
+}
+h1 {
+  font-size:40px
+}
+.app {
+  padding-top:calc(12px + env(safe-area-inset-top))
+}
+.tap {
+  height:52px
+}
+}
+      </style>
+    </head>
+    <body>
+      <main class="app">
+        <header>
+          <div class="logo">ギリ止め<span>。</span>
+          </div>
+          <div class="edition">ONE TAP GAME</div>
+          </header>
+          <section class="intro">
+            <div class="eyebrow">TIMING IS EVERYTHING</div>
+              <h1>ギリ止め。</h1>
+                <p class="desc">緑色の枠の真ん中により近い位置で止める。<br>10ラウンド行い高スコアを狙おう！</p>
+                </section>
+                <section class="stats">
+                  <div class="stat">
+                    <small>スコア</small>
+                      <strong id="score">0000</strong>
+                      </div>
+                      <div class="stat">
+                        <small>コンボ</small>
+                          <strong id="combo">0</strong>
+                          </div>
+                          <div class="stat">
+                            <small>ベスト</small>
+                              <strong id="best">0000</strong>
+                              </div>
+                            </section>
+                            <section class="game">
+                              <div class="gamehead">
+                                <span id="roundLabel">ROUND 01 / 10</span>
+                                  <strong id="status">READY</strong>
+                                  </div>
+                                  <div class="track" id="track">
+                                    <div class="zone" id="zone">
+                                    </div>
+                                    <div class="needle" id="needle">
+                                    </div>
+                                  </div>
+                                  <div class="scale">
+                                    <span>WAIT FOR IT</span>
+                                      <span>ONE TAP</span>
+                                      </div>
+                                      <button class="tap" id="tapBtn">タップしてスタート</button>
+                                        <div class="feedback" id="feedback" aria-live="polite">真ん中に近いほど高得点。</div>
+                                        </section>
+                                        <section class="result" id="result">
+                                          <div class="label">YOUR SCORE</div>
+                                            <div class="final" id="finalScore">0000</div>
+                                              <div class="rank" id="rank">いい勝負！</div>
+                                                <p id="resultText">
+                                                </p>
+                                                <div class="actions">
+                                                  <button class="secondary share" id="shareBtn">𝕏 に結果を投稿</button>
+                                                    <button class="secondary" id="retryBtn">もう一度</button>
+                                                    </div>
+                                                  </section>
+                                                  <div class="how">
+                                                    <div>
+                                                      <b>01</b>　タップでスタート</div>
+                                                        <div>
+                                                          <b>02</b>　色の中でタップ</div>
+                                                            <div>
+                                                              <b>03</b>　10回で結果発表</div>
+                                                              </div>
+                                                              <footer>ギリ止め。 · 1プレイ約20秒</footer>
+                                                              </main>
 <script>
-(()=>{
-const $=id=>document.getElementById(id);
-let score=0,combo=0,round=0,running=false,started=false,ended=false,x=3,dir=1,speed=1.25,zoneLeft=38,zoneWidth=24,prev=0,raf=0,roundTimer=0;
-let best=Number(localStorage.getItem('giridome_best')||0);
-$('best').textContent=String(best).padStart(4,'0');
-function prep(){
- if(round>=10){finish();return}
- round++;
- zoneWidth=Math.max(7.5,24-(round-1)*1.65);
- zoneLeft=8+Math.random()*(84-zoneWidth);
- $('zone').style.left=zoneLeft+'%';$('zone').style.width=zoneWidth+'%';
- x=Math.random()<.5?2:98;dir=x<50?1:-1;speed=1.25+(round-1)*.19;
- $('needle').style.left=x+'%';
- $('roundLabel').textContent=`ROUND ${String(round).padStart(2,'0')} / 10`;
- $('status').textContent='GO';$('tapBtn').textContent='タップして止める';
- $('tapBtn').disabled=false;$('feedback').className='feedback';$('feedback').textContent='真ん中に近いほど高得点。';
- started=true;running=true;prev=0;raf=requestAnimationFrame(tick);
-}
-function tick(t){
- if(!running)return;
- if(!prev)prev=t;
- const dt=Math.min(40,t-prev);prev=t;
- x+=dir*speed*dt*.055;
- if(x>=98){x=98;dir=-1}else if(x<=2){x=2;dir=1}
- $('needle').style.left=x+'%';
- raf=requestAnimationFrame(tick);
-}
-function stop(){
- if(ended)return;
- if(!started){prep();return}
- if(!running)return;
- running=false;cancelAnimationFrame(raf);
- const inside=x>=zoneLeft&&x<=zoneLeft+zoneWidth;
- if(inside){
-  combo++;
-  const center=zoneLeft+zoneWidth/2,diff=Math.abs(x-center),accuracy=Math.max(0,1-diff/(zoneWidth/2));
-  const pts=Math.round(100+accuracy*100+combo*15+round*5);score+=pts;
-  $('feedback').className='feedback good';$('feedback').textContent=(accuracy>.8?'PERFECT  ':accuracy>.45?'GREAT  ':'HIT  ')+`+${pts}`;
-  $('status').textContent=accuracy>.8?'PERFECT':'HIT';
- }else{
-  combo=0;$('feedback').className='feedback bad';$('feedback').textContent='MISS — コンボ終了';$('status').textContent='MISS';
- }
- $('score').textContent=String(score).padStart(4,'0');$('combo').textContent=combo;
- $('tapBtn').disabled=true;$('tapBtn').textContent=round>=10?'結果を見る':'次のラウンド…';
- roundTimer=setTimeout(()=>{if(!ended)prep()},420);
-}
-function finish(){
- ended=true;running=false;started=false;cancelAnimationFrame(raf);
- if(score>best){best=score;localStorage.setItem('giridome_best',String(best));$('best').textContent=String(best).padStart(4,'0')}
- const rank=score>=2400?'神タップ。':score>=1800?'かなりの腕前':score>=1200?'センスあり':score>=650?'いい感じ':'伸びしろ十分';
- $('finalScore').textContent=String(score).padStart(4,'0');
- $('rank').textContent=(score===best?'BEST RECORD · ':'')+rank;
- $('resultText').textContent=`全10ラウンド終了。自己ベスト ${best} 点。もう一度挑戦して記録を更新しよう。`;
- $('result').classList.add('show');$('tapBtn').textContent='FINISH';$('tapBtn').disabled=true;$('status').textContent='FINISH';
-}
-function restart(){
- clearTimeout(roundTimer);score=0;combo=0;round=0;running=false;started=false;ended=false;cancelAnimationFrame(raf);
- $('score').textContent='0000';$('combo').textContent='0';$('result').classList.remove('show');
- $('tapBtn').disabled=false;$('tapBtn').textContent='タップしてスタート';
- $('feedback').className='feedback';$('feedback').textContent='真ん中に近いほど高得点。';
- $('roundLabel').textContent='ROUND 01 / 10';$('status').textContent='READY';
- $('needle').style.left='3%';$('zone').style.left='38%';$('zone').style.width='24%';
-}
-$('tapBtn').addEventListener('pointerdown',e=>{e.preventDefault();stop()},{passive:false});
-$('track').addEventListener('pointerdown',e=>{e.preventDefault();stop()},{passive:false});
-$('retryBtn').addEventListener('click',restart);
-
-$('shareBtn').addEventListener('click',()=>{
- const msg=`「ギリ止め。」で${score}点！\n称号：${$('rank').textContent}\n\n👇ここで遊べる！\nhttps://kayano-gemubeya.github.io/giridome./\n\n10回勝負！あなたは何点？\n#ギリ止め`;
- window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
-});
+(() => {
+  const $=id=>document.getElementById(id);
+  let score=0,combo=0,round=0,running=false,started=false,ended=false,x=3,dir=1,speed=1.25,zoneLeft=38,zoneWidth=24,prev=0,raf=0,roundTimer=0;
+  let best=Number(localStorage.getItem('giridome_best')||0);
+  $('best').textContent=String(best).padStart(4,'0');
+  function prep() {
+    if(round>=10) {
+      finish();
+      return}
+      round++;
+      zoneWidth=Math.max(7.5,24-(round-1)*1.65);
+      zoneLeft=8+Math.random()*(84-zoneWidth);
+      $('zone').style.left=zoneLeft+'%';
+      $('zone').style.width=zoneWidth+'%';
+      x=Math.random()<.5?2:98;
+      dir=x<50?1:-1;
+      speed=1.25+(round-1)*.19;
+      $('needle').style.left=x+'%';
+      $('roundLabel').textContent=`ROUND ${String(round).padStart(2,'0')} / 10`;
+      $('status').textContent='GO';
+      $('tapBtn').textContent='タップして止める';
+      $('tapBtn').disabled=false;
+      $('feedback').className='feedback';
+      $('feedback').textContent='真ん中に近いほど高得点。';
+      started=true;
+      running=true;
+      prev=0;
+      raf=requestAnimationFrame(tick);
+    }
+  function tick(t) {
+    if(!running)return;
+    if(!prev)prev=t;
+    const dt=Math.min(40,t-prev);
+    prev=t;
+    x+=dir*speed*dt*.055;
+    if(x>=98) {
+      x=98;
+      dir=-1} else if(x<=2) {
+        x=2;
+        dir=1}
+        $('needle').style.left=x+'%';
+        raf=requestAnimationFrame(tick);
+      }
+    function stop() {
+      if(ended)return;
+      if(!started) {
+        prep();
+        return}
+        if(!running)return;
+        running=false;
+        cancelAnimationFrame(raf);
+        const inside=x>=zoneLeft&&x<=zoneLeft+zoneWidth;
+        if(inside) {
+          combo++;
+          const center=zoneLeft+zoneWidth/2,diff=Math.abs(x-center),accuracy=Math.max(0,1-diff/(zoneWidth/2));
+          const pts=Math.round(100+accuracy*100+combo*15+round*5);
+          score+=pts;
+          $('feedback').className='feedback good';
+          $('feedback').textContent=(accuracy>.8?'PERFECT  ':accuracy>.45?'GREAT  ':'HIT  ')+`+${pts}`;
+          $('status').textContent=accuracy>.8?'PERFECT':'HIT';
+        } else {
+          combo=0;
+          $('feedback').className='feedback bad';
+          $('feedback').textContent='MISS — コンボ終了';
+          $('status').textContent='MISS';
+        }
+      $('score').textContent=String(score).padStart(4,'0');
+      $('combo').textContent=combo;
+      $('tapBtn').disabled=true;
+      $('tapBtn').textContent=round>=10?'結果を見る':'次のラウンド…';
+      roundTimer=setTimeout(() => {
+        if(!ended)prep()},420);
+      }
+    function finish() {
+      ended=true;
+      running=false;
+      started=false;
+      cancelAnimationFrame(raf);
+      if(score>best) {
+        best=score;
+        localStorage.setItem('giridome_best',String(best));
+        $('best').textContent=String(best).padStart(4,'0')}
+        const rank=score>=2400?'神タップ。':score>=1800?'かなりの腕前':score>=1200?'センスあり':score>=650?'いい感じ':'伸びしろ十分';
+        $('finalScore').textContent=String(score).padStart(4,'0');
+        $('rank').textContent=(score===best?'BEST RECORD · ':'')+rank;
+        $('resultText').textContent=`全10ラウンド終了。自己ベスト ${best} 点。もう一度挑戦して記録を更新しよう。`;
+        $('result').classList.add('show');
+        $('tapBtn').textContent='FINISH';
+        $('tapBtn').disabled=true;
+        $('status').textContent='FINISH';
+      }
+    function restart() {
+      clearTimeout(roundTimer);
+      score=0;
+      combo=0;
+      round=0;
+      running=false;
+      started=false;
+      ended=false;
+      cancelAnimationFrame(raf);
+      $('score').textContent='0000';
+      $('combo').textContent='0';
+      $('result').classList.remove('show');
+      $('tapBtn').disabled=false;
+      $('tapBtn').textContent='タップしてスタート';
+      $('feedback').className='feedback';
+      $('feedback').textContent='真ん中に近いほど高得点。';
+      $('roundLabel').textContent='ROUND 01 / 10';
+      $('status').textContent='READY';
+      $('needle').style.left='3%';
+      $('zone').style.left='38%';
+      $('zone').style.width='24%';
+    }
+  $('tapBtn').addEventListener('pointerdown',e=>{e.preventDefault();
+  stop()},{passive:false});
+  $('track').addEventListener('pointerdown',e=>{e.preventDefault();
+  stop()},{passive:false});
+  $('retryBtn').addEventListener('click',restart);
+  $('shareBtn').addEventListener('click',()=>{
+    const msg=`「ギリ止め。」で${score}点！\n称号：${$('rank').textContent}\n\n👇ここで遊べる！\nhttps://kayano-gemubeya.github.io/giridome./\n\n10回勝負、あなたは何点？\n#ギリ止め`;
+    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
+  });
 })();
 </script>
 </body>
