@@ -52,9 +52,9 @@ footer{margin-top:auto;padding-top:28px;text-align:center;font-size:10px;color:#
 </head>
 <body>
 <main class="app">
-<header><div class="logo">ギリ止め<span>。</span></div><div class="edition">ONE TAP GAME</div></header>
+<header><div class="logo">ギリ止め<span>。</span></div><div class="edition"> </div></header>
 <section class="intro">
-<div class="eyebrow">TIMING IS EVERYTHING</div>
+<div class="eyebrow"> </div>
 <h1>ギリ止め。</h1>
 <p class="desc">緑色の枠の真ん中により近い位置で止める。<br>10ラウンド行い高スコアを狙おう！</p>
 </section>
@@ -66,7 +66,7 @@ footer{margin-top:auto;padding-top:28px;text-align:center;font-size:10px;color:#
 <section class="game">
 <div class="gamehead"><span id="roundLabel">ROUND 01 / 10</span><strong id="status">READY</strong></div>
 <div class="track" id="track"><div class="zone" id="zone"></div><div class="needle" id="needle"></div></div>
-<div class="scale"><span>WAIT FOR IT</span><span>ONE TAP</span></div>
+<div class="scale"><span> </span><span> </span></div>
 <button class="tap" id="tapBtn">タップしてスタート</button>
 <div class="feedback" id="feedback" aria-live="polite">真ん中に近いほど高得点。</div>
 </section>
@@ -148,7 +148,7 @@ $('track').addEventListener('pointerdown',e=>{e.preventDefault();stop()},{passiv
 $('retryBtn').addEventListener('click',restart);
 
 $('shareBtn').addEventListener('click',()=>{
- const msg=`「ギリ止め。」で${score}点！\n称号：${$('rank').textContent}\n\n👇ここで遊べる！\nhttps://kayano-gemubeya.github.io/giridome./\n\n10回勝負、あなたは何点？\n#ギリ止め`;
+ const msg=`「ギリ止め。」で${score}点！\n称号：${$('rank').textContent}\n\n👇ここで遊べる！\nhttps://kayano-gemubeya.github.io/giridome./\n\n10回勝負！あなたは何点？\n#ギリ止め`;
  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
 });
 })();
