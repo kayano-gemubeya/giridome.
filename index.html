@@ -480,15 +480,27 @@ h1 {
       $('zone').style.left='38%';
       $('zone').style.width='24%';
     }
-  $('tapBtn').addEventListener('pointerdown',e=>{e.preventDefault();
-  stop()},{passive:false});
-  $('track').addEventListener('pointerdown',e=>{e.preventDefault();
-  stop()},{passive:false});
-  $('retryBtn').addEventListener('click',restart);
-  $('shareBtn').addEventListener('click',()=>{
-    const msg=`「ギリ止め。」で${score}点！\n称号：${$('rank').textContent}\n\n👇ここで遊べる！\nhttps://kayano-gemubeya.github.io/giridome./\n\n10回勝負、あなたは何点？\n#ギリ止め`;
-    window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
-  });
+$('retryBtn').addEventListener('click',restart);
+
+$('shareBtn').addEventListener('click', () => {
+  const msg =
+`「ギリ止め。」で${score}点！
+
+称号：${$('rank').textContent}
+
+👇ここで遊べる！
+https://kayano-gemubeya.github.io/giridome/
+
+10回勝負、あなたは何点？
+
+#ギリ止め`;
+
+  window.open(
+    'https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg),
+    '_blank',
+    'noopener,noreferrer'
+  );
+});
 })();
 </script>
 </body>
