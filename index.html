@@ -111,7 +111,6 @@ function stop(){
  if(ended)return;
  if(!started){prep();return}
  if(!running)return;
- // Stop synchronously on the input event: no debounce or timeout before scoring.
  running=false;cancelAnimationFrame(raf);
  const inside=x>=zoneLeft&&x<=zoneLeft+zoneWidth;
  if(inside){
@@ -125,7 +124,6 @@ function stop(){
  }
  $('score').textContent=String(score).padStart(4,'0');$('combo').textContent=combo;
  $('tapBtn').disabled=true;$('tapBtn').textContent=round>=10?'結果を見る':'次のラウンド…';
- // Brief visual feedback, then next round. Stop itself is immediate.
  roundTimer=setTimeout(()=>{if(!ended)prep()},420);
 }
 function finish(){
@@ -149,7 +147,6 @@ $('tapBtn').addEventListener('pointerdown',e=>{e.preventDefault();stop()},{passi
 $('track').addEventListener('pointerdown',e=>{e.preventDefault();stop()},{passive:false});
 $('retryBtn').addEventListener('click',restart);
 
-/* Xの投稿文にゲームURLを追加。ゲーム本体の処理は変更なし。 */
 $('shareBtn').addEventListener('click',()=>{
  const msg=`「ギリ止め。」で${score}点！\n称号：${$('rank').textContent}\n\n👇ここで遊べる！\nhttps://kayano-gemubeya.github.io/giridome./\n\n10回勝負、あなたは何点？\n#ギリ止め`;
  window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');
