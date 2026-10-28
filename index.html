@@ -480,19 +480,26 @@ h1 {
       $('zone').style.left='38%';
       $('zone').style.width='24%';
     }
+
+$('tapBtn').addEventListener('pointerdown', e => {
+  e.preventDefault();
+  stop();
+}, {passive: false});
+
+$('track').addEventListener('pointerdown', e => {
+  e.preventDefault();
+  stop();
+}, {passive: false});
+
 $('retryBtn').addEventListener('click',restart);
 
 $('shareBtn').addEventListener('click', () => {
   const msg =
 `「ギリ止め。」で${score}点！
-
 称号：${$('rank').textContent}
-
 👇ここで遊べる！
 https://kayano-gemubeya.github.io/giridome/
-
 あなたは何点取れる？
-
 #ギリ止め`;
 
   window.open(
